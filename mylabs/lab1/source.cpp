@@ -8,6 +8,9 @@ int main(int a, char* args[])
 	ifstream in;
 	in.open(args[1]);
 
+	ofstream out;
+	out.open("output.txt");
+
 	if(in.fail())
 	{
 		cout << "FAIL" << endl;
@@ -15,8 +18,8 @@ int main(int a, char* args[])
 		exit(1);
 	}
 
-	cout << "x\tx^2\tsum" << endl;
-	cout << "=\t===\t===" << endl;
+	out << "x\tx^2\tsum" << endl;
+	out << "=\t===\t===" << endl;
 	
 	int read = 0;
 	int sum = 0;
@@ -27,11 +30,13 @@ int main(int a, char* args[])
 		//add read to sum
 		sum += read;
 		
-		cout << read << "\t" << read * read << "\t" << sum << endl;
+		out << read << "\t" << read * read << "\t" << sum << endl;
 	}
 
+	cout << "Please see output.txt for the output of the program." << endl;
 
 	in.close();
+	out.close();
 
 	return 0;
 }
