@@ -1,5 +1,6 @@
 // Defining your own types
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -37,6 +38,30 @@ typedef struct {
 // Forward declaration
 void printCard(Card card);
 
+vector<Card> makeDeck()
+{
+	//create vector
+	vector<Card> deck;
+	
+	//create cards
+	for(int suit = 0; suit < 4; suit++)
+	{
+		for(int rank = 0; rank < 13; rank++)
+		{
+			Card c;
+			c.suit = Suit(suit);
+			c.rank = Rank(rank);
+			
+			deck.push_back(c);
+		}
+	}
+	
+	
+	//return vector
+	return deck;
+	
+}
+
 // Type
 // variable
 // CONSTANT
@@ -46,13 +71,16 @@ int main() {
     int age;
     string name;
     
-    Card card;
+
+    vector<Card> deck = makeDeck();
+
+    for(int i = 0; i < deck.size(); i++)
+    {
+		printCard(deck[i]);
+		//cout << endl;
+    }
+	
     
-    // variable = some_value;
-    card.suit = SPADES;
-    card.rank = ACE;
-    
-    printCard(card);
     
     return 0;
 }
