@@ -36,6 +36,30 @@ typedef struct {
 // Forward declaration
 void printCard(Card card);
 
+<<<<<<< HEAD
+vector<Card> makeDeck()
+{
+	//create vector
+	vector<Card> deck;
+	
+	//create cards
+	for(int suit = 0; suit < 4; suit++)
+	{
+		for(int rank = 0; rank < 13; rank++)
+		{
+			Card c;
+			c.suit = Suit(suit);
+			c.rank = Rank(rank);
+			
+			deck.push_back(c);
+		}
+	}
+	
+	
+	//return vector
+	return deck;
+	
+=======
 // return_type identifier(parameters, ...);
 vector<Card> makeDeck() {
     // create a vector
@@ -55,6 +79,7 @@ vector<Card> makeDeck() {
     }
     // return the vector
     return deck;
+>>>>>>> d294205fceb1e532dd5ca28ee4491f8d3d133df2
 }
 
 // Type
@@ -66,6 +91,18 @@ int main() {
     int age;
     string name;
     
+<<<<<<< HEAD
+
+    vector<Card> deck = makeDeck();
+
+    for(int i = 0; i < deck.size(); i++)
+    {
+		printCard(deck[i]);
+		//cout << endl;
+    }
+	
+    
+=======
     // We'll need to define makeDeck()
     vector<Card> deck = makeDeck();
     
@@ -73,6 +110,7 @@ int main() {
         printCard(deck[i]);
         cout << endl;
     }
+>>>>>>> d294205fceb1e532dd5ca28ee4491f8d3d133df2
     
     return 0;
 }
