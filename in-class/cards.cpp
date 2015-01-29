@@ -1,7 +1,7 @@
 // Defining your own types
 #include <iostream>
 #include <vector>
-//randomness
+// Silly randomness
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
