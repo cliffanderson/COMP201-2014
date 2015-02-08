@@ -1,10 +1,17 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <fstream>
 
 using namespace std;
 
-enum State { FIRST, MATCH, NO_MATCH };
+
+//state of the game
+	//FIRST: choosing the first cell
+	//SECOND: choosing the second cell
+	//MATCH: There was a match, congratulate the player and reset state to FIRST
+	//NO_MATCH: There was not a match, tell the player, reset the cells, and reset state to FIRST
+enum State { FIRST, SECOND, MATCH, NO_MATCH };
 // Concentration game model
 // The model manages the state of the game
 class Model {
@@ -25,6 +32,11 @@ public:
     void flip(int row, int column);
     // Is the game over?
     bool gameOver();
+	
+	State getState()
+	{
+		return state;
+	}
 private:
     // Is the row/column valid?
     bool valid(int row, int column);
@@ -39,9 +51,14 @@ private:
     int width;
     // What's the height?
     int height;
-    // What'd we flip last?
+    // Used when flipping the second cell
     int lastRow;
     int lastColumn;
+	
+	//used when picking flipping the first cell
+	int lasterRow;
+	int lasterColumn;
+	
     State state;
 };
 
@@ -76,8 +93,12 @@ private:
 Model::Model(int w, int h) {
     width = w;
     height = h;
+	
     lastRow = -1;
     lastColumn = -1;
+	lasterRow = -1;
+	lasterColumn = -1;
+	
     state = FIRST;
     grid = new char*[h];
     visible = new char*[h];
@@ -97,22 +118,31 @@ Model::Model(int w, int h) {
 	for(int i = 0; i < 1000; i++)
 	{
 		int place1 = rand() % 64;
-		int place2 = rand() & 64;
+		int place2 = rand() % 64;
 		
 		char temp = options[place1];
 		options[place1] = options[place2];
 		options[place2] = temp;
 	}
 	
+	//output answers to separate file for testing/cheating
+	ofstream out;
+	out.open("answers.txt");
+	
+	//index of random letters
 	int index = 0;
 	
     for (int i = 0; i < height; i++) {
+		out << endl;
         for (int j = 0; j < width; j++) {
            // grid[i][j] = 'a';
 		   grid[i][j] = options[index++];
+		   out << grid[i][j] << " ";
             visible[i][j] = '*';
         }
     }
+	
+	out.close();
 }
 // Destructor deletes dynamically allocated memory
 Model::~Model() {
@@ -127,16 +157,79 @@ Model::~Model() {
 // That is, is the row within the height, and is the column within the width?
 // Return whether it is or isn't.
 bool Model::valid(int row, int column) {
-    return true;
+    return row < width && column < height;
 }
 bool Model::matched(int row, int column) {
-    return true;
+    return grid[row][column] == grid[lastRow][lastColumn];
 }
 // TODO: Flip a cell
 void Model::flip(int row, int column) {
+	//cout << "Flipping row " << row << " and column " << column << " with state " << state << endl;
     // If the row and column are not valid, break out and don't do anything
     if (!valid(row, column)) { return; }
     
+	if(state == FIRST)
+	{
+		visible[row][column] = grid[row][column];
+		lasterRow = row;
+		lasterColumn = column;
+		
+		state = SECOND;
+	}
+	else if (state == SECOND)
+	{
+		if(lasterRow == row && lasterColumn == column)
+			//don't want to pick the same cell
+			return;
+		visible[row][column] = grid[row][column];
+		lastRow = row;
+		lastColumn = column;
+		
+		if(grid[lasterRow][lasterColumn] == grid[lastRow][lastColumn])
+		{
+			//we have a match
+			state = MATCH;
+		}
+		else
+		{
+			//no match7
+			state = NO_MATCH;
+		}
+		
+	}
+	else if (state == MATCH)
+	{
+		cout << endl << "Congratulations! You have made a match!!" << endl;
+		
+		//reset variables
+		lasterRow = -1;
+		lasterColumn = -1;
+		lastRow = -1;
+		lastColumn = -1;
+		
+		state = FIRST;
+	}
+	else if (state == NO_MATCH)
+	{
+		cout << endl << "Sorry, that was not a match, please try again." << endl;
+		
+		//reset visible cells
+		visible[lasterRow][lasterColumn] = '*';
+		visible[lastRow][lastColumn] = '*';
+		
+		//reset variables
+		lasterRow = -1;
+		lasterColumn = -1;
+		lastRow = -1;
+		lastColumn = -1;
+		state = FIRST;
+	}
+	else
+	{
+		cout << endl << "Error..." << endl; 
+	}
+	
+	
     // If the last selected row and column are invalid,
         // It means we're selecting the first "cell" to flip
     // Otherwise, we are selecting the next "cell" to flip
@@ -146,9 +239,16 @@ void Model::flip(int row, int column) {
 }
 // If everything is visible, then it's game over
 bool Model::gameOver() {
-    // Hint: assume the game is over, unless it isn't
-    // Hint: Loop through the grid and see if any element is not visible
-    return false;
+    for(int i = 0; i < 7; i++)
+	{
+		for(int j = 0; j < 7; j++)
+		{
+			if(visible[i][j] == '*')
+				return false;
+		}
+	}
+	
+    return true;
 }
 int Model::getWidth() {
     return width;
@@ -180,13 +280,21 @@ void View::show(Model * model) {
 void Controller::loop() {
     int row, col;
     while (!model->gameOver()) {
-        view->show(model);
-        cout << "Enter row:    ";
-        cin >> row;
-        cout << "Enter column: ";
-        cin >> col;
+		//cout << endl << "DEBUG    " << model->getState() << "   DEBUG" << endl;
+
+		view->show(model);
+				
+		if(!(model->getState() == MATCH || model->getState() == NO_MATCH))
+		{
+			cout << "Enter row:    ";
+			cin >> row;
+			cout << "Enter column: ";
+			cin >> col;
+		}
         model->flip(row, col);
     }
+	
+	cout << endl << "You win! Thanks for playing!" << endl;
 }
 
 int main() {
