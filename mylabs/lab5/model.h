@@ -9,8 +9,8 @@ using namespace std;
 enum Direction { UP, DOWN, LEFT, RIGHT, DEAD };
 
 typedef struct {
-    unsigned int x;
-    unsigned int y;
+    int x;
+    int y;
 } Coordinate;
 
 // The model manages the state of the game

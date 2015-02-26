@@ -55,24 +55,7 @@ void Controller::loop() {
         }
     }
     // TODO: show something nice?
+	
     view->show(model);
     SDL_Delay(3000);
 }
-
-/*
-// Show the board
-// Read in coordinates
-// Until we're done
-void Controller::loop() {
-    int row, col;
-    while (!model->gameOver()) {
-        view->show(model);
-        cout << "Enter row:    ";
-        cin >> row;
-        cout << "Enter column: ";
-        cin >> col;
-        model->flip(row, col);
-    }
-    cout << "Hooray, you win!" << endl;
-}
-*/
