@@ -40,6 +40,7 @@ public:
     int height;
 private:
     bool ended;
+	bool eat;
 };
 
 #endif

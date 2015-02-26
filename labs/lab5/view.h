@@ -18,6 +18,8 @@ public:
     ~View();
     // Print out the visible stuff in the grid
     void show(Model * model);
+	
+
 private:
     SDL_Window* window;
     SDL_Surface* screen;
@@ -26,7 +28,7 @@ private:
     SDL_Surface* snake;
     SDL_Surface* text;
     Mix_Music * music;
-    Mix_Chunk * food;
+	Mix_Chunk * food;
     Mix_Chunk * dead;
     TTF_Font * font;
 };

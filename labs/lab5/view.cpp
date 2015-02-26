@@ -38,7 +38,7 @@ View::View(string title, int width, int height) {
     snake = load("assets/snake.png");
     music = Mix_LoadMUS("assets/2Inventions_-_Johaness_Gilther_-_Don_t_leave_me.mp3");
     if (music != NULL) {
-        Mix_PlayMusic( music, -1 );
+        //Mix_PlayMusic( music, -1 );
     }
     food = Mix_LoadWAV("assets/yummy.wav");
     dead = Mix_LoadWAV("assets/nooo.wav");

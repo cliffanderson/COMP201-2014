@@ -20,6 +20,8 @@ Model::Model(int w, int h) {
     food.y = 10;
     snake.push_front(head);
     snake.push_back(tail);
+	
+	eat = false;
 }
 // Destructor deletes dynamically allocated memory
 Model::~Model() {
@@ -36,7 +38,7 @@ void Model::go(Direction d) {
 
 // Return true if the front of the snake has the same coordinate as the food
 bool Model::eating() {
-    return false;
+    return eat;
 }
 
 void Model::end() {
@@ -58,9 +60,41 @@ void Model::crawl() {
     if (direction != DEAD) {
         snake.push_front(front);
     }
+	else
+	{
+		//is dead
+		if(snake.size() > 0)
+			snake.pop_back();
+		//if(snake.size() > 0)
+			//snake.pop_back();
+	}
+	
+	//reset eat first
+	eat = false;
+	
+	//tell if its hit the wall and if so, kill it
+	if(front.x < 0 || front.y < 0 || front.x > width || front.y > height)
+	{
+		//hit the wall
+		go(DEAD);
+	}
+	
+	//eat food
+	if(food.x == front.x && food.y == front.y)
+	{
+		//eat the food, don't take back off, we want to grow
+		//play sound effect
+		eat = true;	
+		//replace food
+		food.x = rand() % width;
+		food.y = rand() % height;
+	}
+	else
+	{
+		snake.pop_back();
+	}
 
     // TODO: Colliding with food grows the snake (so don't pop_back in that case)
     // TODO: Also, colliding with food should cause us to place the food somewhere
     // else, but not anywhere on the snake.
-    snake.pop_back();
 }
