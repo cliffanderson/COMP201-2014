@@ -25,7 +25,7 @@ Model::~Model() {
 }
 
 bool Model::gameOver() {
-    return snake.empty() || snake.size() == width * height;
+    return snake.empty() || snake.size() == 64 * 48 ;
 }
 
 // Which way should the snake face?
@@ -35,7 +35,6 @@ void Model::go(Direction d) {
 
 // Move foward
 void Model::crawl() {
-	cout << "Move" << endl;
 	
     Coordinate front = snake.front();
     switch(direction) {
@@ -46,17 +45,37 @@ void Model::crawl() {
     }
     // TODO: Colliding with the perimeter of the screen should set direction to DEAD
     // When DEAD, the snake slowly shrinks down to nothing
-    
+    if(front.x < 0 || front.x == 64 || front.y < 0 || front.y == 48)
+	{
+		//dead
+		direction = DEAD;
+	}
+	
+	
+	//move forward
     if (direction != DEAD) {
         snake.push_front(front);
     }
+	else
+	{
+		//is dead
+		snake.pop_front();
+		snake.pop_back();
+		return;
+	}
 
     // TODO: Colliding with food grows the snake (so don't pop_back in that case)
 	if(front.x == food.x && front.y == food.y)
 	{
-		cout << "Yum!" << endl;
+		// TODO: Also, colliding with food should cause us to place the food somewhere
+		// else, but not anywhere on the snake.
+		
+		food.x = rand() % 64;
+		food.y = rand() % 48;
 	}
-    // TODO: Also, colliding with food should cause us to place the food somewhere
-    // else, but not anywhere on the snake.
-    snake.pop_back();
+	else
+	{
+		snake.pop_back();
+	}
+    
 }
